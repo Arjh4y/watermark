@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, SlashCommandBuilder } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -91,25 +91,23 @@ client.once('ready', () => {
 
 // User info command module
 module.exports = {
-    name: 'userinfo',
-    description: 'Get details and profile picture (PFP) of a mentioned user or by user ID.',
-    async execute(message, args) {
-        let user;
+    data: new SlashCommandBuilder()
+        .setName('userinfo')
+        .setDescription('Get details and profile picture (PFP) of a user.')
+        .addUserOption(option =>
+            option
+                .setName('target')
+                .setDescription('The user to fetch info for')
+                .setRequired(false)
+        ),
+    async execute(interaction) {
+        // Get the target user or the command user
+        const user = interaction.options.getUser('target') || interaction.user;
 
-        if (message.mentions.users.size) {
-            user = message.mentions.users.first();
-        } else if (args.length) {
-            try {
-                user = await message.client.users.fetch(args[0]);
-            } catch (error) {
-                return message.reply('Invalid user ID provided.');
-            }
-        } else {
-            user = message.author;
-        }
-
+        // Generate avatar URL
         const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
 
+        // Build user info response
         const userInfo = `
 👤 **User Info:**
 =========================
@@ -122,7 +120,8 @@ module.exports = {
 **Profile Picture**: [Click Here](${avatarURL})
         `;
 
-        message.reply(userInfo);
+        // Reply to the interaction
+        await interaction.reply(userInfo);
     },
 };
 
