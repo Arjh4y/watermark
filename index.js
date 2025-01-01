@@ -167,4 +167,4 @@ client.on('interactionCreate', async (interaction) => {
 });
 
 
-client.login.catch(console.error); 
+login();
