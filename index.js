@@ -107,18 +107,21 @@ module.exports = {
 
         const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
 
-        const userInfo = 
-                    \``
-                    👤 User Info:
-                    =========================
-                    Username      : ${user.username}
-                    User ID       : ${user.id}
-                    Account Created: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(user.createdTimestamp).toLocaleTimeString()})
-                    =========================
-                    ```
-                    
-                    Profile Picture: [Click Here](${avatarURL})
+        const userInfo = `
+👤 **User Info:**
+=========================
+**Username**      : ${user.username}
+**User ID**       : ${user.id}
+**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(
+            user.createdTimestamp
+        ).toLocaleTimeString()})
+=========================
+**Profile Picture**: [Click Here](${avatarURL})
         `;
+
+        message.reply(userInfo);
+    },
+};
 
         message.reply(userInfo);
     },
