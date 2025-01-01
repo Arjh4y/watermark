@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "author": "Saito(javinarjj)", 
+  "author": "Saito(_sythoo)", 
   "license": "MIT", 
   "dependencies": {
     "discord.js": "^14.16.1",
