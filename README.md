@@ -68,7 +68,7 @@ Hit Deploy, and watch your project come to life!
 💡 Tip: For smoother deployment, check that all necessary configurations (like environment variables) are set.
 
 🖋 Created by
-Saito (javinarjj)
+Saito (@_sythoo)
 
 This guide will help you get started with hosting your web projects in no time! 🚀
 Join our Discord community for any questions or collaboration opportunities.
