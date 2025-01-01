@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, ActivityType, SlashCommandBuilder, REST, Routes } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 require('dotenv').config(); // Load environment variables
 const express = require('express');
 const path = require('path');
@@ -21,35 +21,6 @@ const statusMessages = ["BOT NI SAITO", "KUPAL KABA MAN?"];
 const statusTypes = ['dnd', 'idle'];
 let currentStatusIndex = 0;
 let currentTypeIndex = 0;
-
-// Helper function to register slash commands
-async function registerSlashCommands() {
-    const commands = [
-        new SlashCommandBuilder()
-            .setName('userinfo')
-            .setDescription('Get details and profile picture (PFP) of a user.')
-            .addUserOption(option =>
-                option
-                    .setName('target')
-                    .setDescription('The user to fetch info for')
-                    .setRequired(false)
-            )
-            .toJSON(),
-    ];
-
-    const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
-
-    try {
-        console.log('Started refreshing application (/) commands.');
-        await rest.put(
-            Routes.applicationCommands(process.env.CLIENT_ID),
-            { body: commands }
-        );
-        console.log('Successfully reloaded application (/) commands.');
-    } catch (error) {
-        console.error('\x1b[31m[ ERROR ]\x1b[0m', 'Failed to register slash commands:', error);
-    }
-}
 
 // Bot login
 async function login() {
@@ -117,37 +88,38 @@ client.on('messageCreate', (message) => {
     messageCounts.set(userId, userMessageData);
 });
 
-// Handle interactions for slash commands
-client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
+module.exports = {
+    name: 'userinfo',
+    description: 'Get details and profile picture (PFP) of a mentioned user or by user ID.',
+    async execute(message, args) {
+        let user;
 
-    if (interaction.commandName === 'userinfo') {
-        try {
-            const user = interaction.options.getUser('target') || interaction.user;
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first();
+        } else if (args.length) {
+            try {
+                user = await message.client.users.fetch(args[0]);
+            } catch (error) {
+                return message.reply('Invalid user ID provided.');
+            }
+        } else {
+            user = message.author;
+        }
 
-            const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
+        const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
 
-            const userInfo = `
-👤 **User Info:**
+        const userInfo = 
+`👤 **User Info:**
 =========================
 **Username**      : ${user.username}
 **User ID**       : ${user.id}
-**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} at ${new Date(
-                user.createdTimestamp
-            ).toLocaleTimeString()}
+**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(user.createdTimestamp).toLocaleTimeString()})
 =========================
 **Profile Picture**: [Click Here](${avatarURL})
-            `;
+`;
 
-            await interaction.reply({ content: userInfo, ephemeral: false });
-        } catch (error) {
-            console.error('Error in /userinfo command:', error);
-            await interaction.reply({
-                content: 'Sorry, I was unable to fetch the user information.',
-                ephemeral: true,
-            });
-        }
-    }
-});
+        message.reply(userInfo);
+    },
+};
 
 login();
