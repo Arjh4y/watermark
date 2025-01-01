@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, SlashCommandBuilder } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -113,23 +113,40 @@ client.once('ready', () => {
 
 // User info command module
 
-module.exports = {
-    name: 'userinfo',
-    description: 'Get details and profile picture (PFP) of a mentioned user or by user ID.',
-    async execute(message, args) {
-        let user;
+const guildId = '910119627793780747';
 
-        if (message.mentions.users.size) {
-            user = message.mentions.users.first();
-        } else if (args.length) {
-            try {
-                user = await message.client.users.fetch(args[0]);
-            } catch (error) {
-                return message.reply('Invalid user ID provided.');
-            }
-        } else {
-            user = message.author;
-        }
+client.once('ready', () => {
+    console.log(`Logged in as ${client.user.tag}!`);
+});
+
+
+client.on('ready', async () => {
+    const commands = [
+        new SlashCommandBuilder()
+            .setName('userinfo')
+            .setDescription('Get information about a user')
+            .addUserOption(option => 
+                option.setName('user')
+                    .setDescription('The user to get info about')
+                    .setRequired(false)),
+    ];
+
+    try {
+        await client.guilds.cache.get(guildId).commands.set(commands);
+        console.log('Slash commands registered');
+    } catch (error) {
+        console.error('Error registering slash commands:', error);
+    }
+});
+
+
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
+
+    const { commandName } = interaction;
+    
+    if (commandName === 'userinfo') {
+        let user = interaction.options.getUser('user') || interaction.user;
 
         const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
 
@@ -145,9 +162,9 @@ module.exports = {
 **Profile Picture**: [Click Here](${avatarURL})
         `;
 
-        message.reply(userInfo);
-    },
-};
+        await interaction.reply(userInfo);
+    }
+});
 
-// Login Function
-login();
+
+client.login(token).catch(console.error); 
