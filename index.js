@@ -1,5 +1,5 @@
-const { Client, GatewayIntentBits, ActivityType, SlashCommandBuilder } = require('discord.js');
-require('dotenv').config();
+const { Client, GatewayIntentBits, ActivityType, SlashCommandBuilder, REST, Routes } = require('discord.js');
+require('dotenv').config(); // Load environment variables
 const express = require('express');
 const path = require('path');
 
@@ -90,40 +90,48 @@ client.once('ready', () => {
 // ... earlier code remains the same ...
 
 // User info command module
-module.exports = {
-    data: new SlashCommandBuilder()
-        .setName('userinfo')
-        .setDescription('Get details and profile picture (PFP) of a user.')
-        .addUserOption(option =>
-            option
-                .setName('target')
-                .setDescription('The user to fetch info for')
-                .setRequired(false)
-        ),
-    async execute(interaction) {
-        // Get the target user or the command user
-        const user = interaction.options.getUser('target') || interaction.user;
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isCommand()) return;
 
-        // Generate avatar URL
-        const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
+    if (interaction.commandName === 'userinfo') {
+        try {
+            const user = interaction.options.getUser('target') || interaction.user;
 
-        // Build user info response
-        const userInfo = `
+            const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
+
+            const userInfo = `
 👤 **User Info:**
 =========================
 **Username**      : ${user.username}
 **User ID**       : ${user.id}
-**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(
-            user.createdTimestamp
-        ).toLocaleTimeString()})
+**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} at ${new Date(
+                user.createdTimestamp
+            ).toLocaleTimeString()}
 =========================
 **Profile Picture**: [Click Here](${avatarURL})
-        `;
+            `;
 
-        // Reply to the interaction
-        await interaction.reply(userInfo);
-    },
-};
+            await interaction.reply({ content: userInfo, ephemeral: false });
+        } catch (error) {
+            console.error('Error in /userinfo command:', error);
+            await interaction.reply({
+                content: 'Sorry, I was unable to fetch the user information.',
+                ephemeral: true,
+            });
+        }
+    }
+});
 
-// Login Function
+// Bot login
+async function login() {
+    try {
+        await client.login(process.env.TOKEN);
+        console.log('\x1b[36m[ LOGIN ]\x1b[0m', `\x1b[32mLogged in as: ${client.user.tag} ✅\x1b[0m`);
+        await registerSlashCommands(); // Register commands after logging in
+    } catch (error) {
+        console.error('\x1b[31m[ ERROR ]\x1b[0m', 'Failed to log in:', error);
+        process.exit(1);
+    }
+}
+
 login();
