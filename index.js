@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, ActivityType, SlashCommandBuilder } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -18,7 +18,7 @@ client.on('ready', () => {
 
 // Anti-spam response
 client.on('messageCreate', (message) => {
-    if (message.author.bot) return; // Ignore bot messages
+    if (message.author.bot) return; 
 
     const userId = message.author.id;
     const userMessageData = messageCounts.get(userId) || { count: 0, timer: null };
@@ -27,19 +27,18 @@ client.on('messageCreate', (message) => {
 
     if (userMessageData.count >= 5) {
         message.channel.send(`WAG SPAM KUPAL KABA BOSS ${message.author}?!`);
-        userMessageData.count = 0; // Reset the counter after sending the warning
+        userMessageData.count = 0; 
     }
 
     if (!userMessageData.timer) {
         userMessageData.timer = setTimeout(() => {
-            messageCounts.delete(userId); // Remove the user from tracking after inactivity
-        }, 10000); // Adjust this timeout (e.g., 10 seconds) as needed
+            messageCounts.delete(userId); 
+        }, 10000); 
     }
 
     messageCounts.set(userId, userMessageData);
 });
 
-// Serve the index.html file
 const app = express();
 const port = 3000;
 app.get('/', (req, res) => {
@@ -53,7 +52,7 @@ app.listen(port, () => {
     );
 });
 
-// Status messages and heartbeat
+// Status messages kupal
 const statusMessages = ['BOT NI SAITO', 'KUPAL KABA MAN?'];
 const statusTypes = ['dnd', 'idle'];
 let currentStatusIndex = 0;
@@ -110,61 +109,5 @@ client.once('ready', () => {
     setInterval(updateStatus, 10000);
     heartbeat();
 });
-
-// User info command module
-
-const guildId = '910119627793780747';
-
-client.once('ready', () => {
-    console.log(`Logged in as ${client.user.tag}!`);
-});
-
-
-client.on('ready', async () => {
-    const commands = [
-        new SlashCommandBuilder()
-            .setName('userinfo')
-            .setDescription('Get information about a user')
-            .addUserOption(option => 
-                option.setName('user')
-                    .setDescription('The user to get info about')
-                    .setRequired(false)),
-    ];
-
-    try {
-        await client.guilds.cache.get(guildId).commands.set(commands);
-        console.log('Slash commands registered');
-    } catch (error) {
-        console.error('Error registering slash commands:', error);
-    }
-});
-
-
-client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
-
-    const { commandName } = interaction;
-    
-    if (commandName === 'userinfo') {
-        let user = interaction.options.getUser('user') || interaction.user;
-
-        const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
-
-        const userInfo = `
-👤 **User Info:**
-=========================
-**Username**      : ${user.username}
-**User ID**       : ${user.id}
-**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(
-            user.createdTimestamp
-        ).toLocaleTimeString()})
-=========================
-**Profile Picture**: [Click Here](${avatarURL})
-        `;
-
-        await interaction.reply(userInfo);
-    }
-});
-
 
 login();
