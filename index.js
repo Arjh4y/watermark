@@ -88,38 +88,5 @@ client.on('messageCreate', (message) => {
     messageCounts.set(userId, userMessageData);
 });
 
-module.exports = {
-    name: 'userinfo',
-    description: 'Get details and profile picture (PFP) of a mentioned user or by user ID.',
-    async execute(message, args) {
-        let user;
-
-        if (message.mentions.users.size) {
-            user = message.mentions.users.first();
-        } else if (args.length) {
-            try {
-                user = await message.client.users.fetch(args[0]);
-            } catch (error) {
-                return message.reply('Invalid user ID provided.');
-            }
-        } else {
-            user = message.author;
-        }
-
-        const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
-
-        const userInfo = 
-`👤 **User Info:**
-=========================
-**Username**      : ${user.username}
-**User ID**       : ${user.id}
-**Account Created**: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(user.createdTimestamp).toLocaleTimeString()})
-=========================
-**Profile Picture**: [Click Here](${avatarURL})
-`;
-
-        message.reply(userInfo);
-    },
-};
 
 login();
