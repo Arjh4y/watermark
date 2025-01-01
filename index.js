@@ -9,7 +9,7 @@ const messageCounts = new Map();
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
-
+// ito sa response bot ng mga kupal na spammer AHAHHA
 client.on('messageCreate', (message) => {
     if (message.author.bot) return; // Ignore bot messages
 
@@ -32,6 +32,7 @@ client.on('messageCreate', (message) => {
     messageCounts.set(userId, userMessageData);
 });
 
+// ito sa watermark ng botghost para mawala 
 const app = express();
 const port = 3000;
 app.get('/', (req, res) => {
@@ -83,5 +84,44 @@ client.once('ready', () => {
   setInterval(updateStatus, 10000);
   heartbeat();
 });
+
+
+// info ng mga kupal 
+module.exports = {
+    name: 'userinfo',
+    description: 'Get details and profile picture (PFP) of a mentioned user or by user ID.',
+    async execute(message, args) {
+        let user;
+
+        if (message.mentions.users.size) {
+            user = message.mentions.users.first();
+        } else if (args.length) {
+            try {
+                user = await message.client.users.fetch(args[0]);
+            } catch (error) {
+                return message.reply('Invalid user ID provided.');
+            }
+        } else {
+            user = message.author;
+        }
+
+        const avatarURL = user.displayAvatarURL({ dynamic: true, size: 1024 });
+
+        const userInfo = 
+                    \``
+                    👤 User Info:
+                    =========================
+                    Username      : ${user.username}
+                    User ID       : ${user.id}
+                    Account Created: ${new Date(user.createdTimestamp).toLocaleDateString()} (${new Date(user.createdTimestamp).toLocaleTimeString()})
+                    =========================
+                    ```
+                    
+                    Profile Picture: [Click Here](${avatarURL})
+        `;
+
+        message.reply(userInfo);
+    },
+};
 
 login();
