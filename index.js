@@ -87,6 +87,9 @@ client.once('ready', () => {
 
 
 // info ng mga kupal 
+// ... earlier code remains the same ...
+
+// User info command module
 module.exports = {
     name: 'userinfo',
     description: 'Get details and profile picture (PFP) of a mentioned user or by user ID.',
@@ -123,8 +126,5 @@ module.exports = {
     },
 };
 
-        message.reply(userInfo);
-    },
-};
-
+// Login Function
 login();
