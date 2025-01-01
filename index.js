@@ -148,6 +148,6 @@ client.on('interactionCreate', async (interaction) => {
             });
         }
     }
-}
+});
 
 login();
