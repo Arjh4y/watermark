@@ -99,13 +99,7 @@ function updateStatus() {
                 ],
             },
         ],
-        status: 'dnd',
     });
-
-    console.log(
-        '\x1b[33m[ STATUS ]\x1b[0m',
-        `Updated status to streaming mode at ${new Date().toLocaleTimeString()}`
-    );
 }
 
 function heartbeat() {
