@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits, ActivityType } = require('discord.js');
+const { Client, GatewayIntentBits, ActivityType, MessageActionRow, MessageButton } = require('discord.js');
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
@@ -44,6 +44,32 @@ client.on('messageCreate', (message) => {
     }
 
     messageCounts.set(userId, userMessageData);
+
+    // Example button usage when a user sends a message
+    if (message.content === '!button') {
+        // Create a row of buttons
+        const row = new MessageActionRow().addComponents(
+            new MessageButton()
+                .setCustomId('primary_button')
+                .setLabel('Click Me!')
+                .setStyle('PRIMARY')
+        );
+
+        // Send a message with the button
+        message.channel.send({
+            content: 'Here is your button!',
+            components: [row],
+        });
+    }
+});
+
+// Handle button interaction
+client.on('interactionCreate', async (interaction) => {
+    if (!interaction.isButton()) return;
+
+    if (interaction.customId === 'primary_button') {
+        await interaction.reply({ content: 'You clicked the button!', ephemeral: true });
+    }
 });
 
 const app = express();
@@ -61,81 +87,43 @@ app.listen(port, () => {
     );
 });
 
-// Status messages kupal
-async function login() {
-    try {
-        await client.login(process.env.TOKEN);
-        console.log(
-            '\x1b[36m[ LOGIN ]\x1b[0m',
-            `\x1b[32mLogged in as: ${client.user.tag} ✅\x1b[0m`
-        );
-        console.log(
-            '\x1b[36m[ INFO ]\x1b[0m',
-            `\x1b[35mBot ID: ${client.user.id} \x1b[0m`
-        );
-        console.log(
-            '\x1b[36m[ INFO ]\x1b[0m',
-            `\x1b[34mConnected to ${client.guilds.cache.size} server(s) \x1b[0m`
-        );
-    } catch (error) {
-        console.error('\x1b[31m[ ERROR ]\x1b[0m', 'Failed to log in:', error);
-        process.exit(1);
-    }
-}
-
-function formatTime() {
-  const date = new Date();
-  const options = {
-    timeZone: 'Asia/Manila', 
-    hour12: true,
-    hour: 'numeric',
-    minute: 'numeric'
-  };
-  return new Intl.DateTimeFormat('en-US', options).format(date);
-}
-
-client.on('ready', async () => {
-  console.clear();
-  console.log(`${client.user.tag} - rich presence started!`);
-
-  setActivity();
-  setInterval(() => {
-    setActivity(); 
-  }, 1000); // Update every second
-});
-
+// Status messages
 async function setActivity() {
-  const time = formatTime();
-  client.user.setActivity({
-    name: `Saito [${time}]`,
-    type: ActivityType.Watching,
-    url: 'https://www.tiktok.com/@javinarjj',
-    assets: {
-      largeImage: 'https://media1.tenor.com/m/EuRL4e1BvGUAAAAC/malupiton-bossing-boss-dila.gif', // Replace with a large image URL
-      largeText: 'Kupal ka BOSS', // Hover text for the large image
-      smallImage: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e3eea550621f1ff34d3ae1f71c9f4e8b~c5_1080x1080.jpeg?lk3s=a5d48078&nonce=98051&refresh_token=f726489b0832fdd6668b68f084aa98b2&x-expires=1736020800&x-signature=pJW8hjQljfhDnHkoBPrl2VZxLR8%3D&shp=a5d48078&shcp=81f88b70', // Replace with a small image URL
-      smallText: '_sythoo', // Hover text for the small image
-    },
-    buttons: [
-      { label: 'Server', url: 'https://discord.gg/zyjnMDyy' },
-    ]
-  });
-
-  client.user.setPresence({ status: 'dnd' }); // 'dnd', 'online', 'idle', 'offline'
+    const time = formatTime();
+    client.user.setActivity({
+        name: `Saito [${time}]`,
+        type: ActivityType.Watching,
+        url: 'https://www.tiktok.com/@javinarjj',
+        assets: {
+            largeImage: 'https://media1.tenor.com/m/EuRL4e1BvGUAAAAC/malupiton-bossing-boss-dila.gif',
+            largeText: 'Kupal ka BOSS',
+            smallImage: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e3eea550621f1ff34d3ae1f71c9f4e8b~c5_1080x1080.jpeg',
+            smallText: '_sythoo',
+        },
+        buttons: [
+            { label: 'Server', url: 'https://discord.gg/zyjnMDyy' },
+        ]
+    });
+    client.user.setPresence({ status: 'dnd' });
 }
 
 function updateStatus() {
-    // Define the updateStatus function to change the bot's activity/status
-    const statusMessages = ['Saito'];
-    const statusTypes = ['dnd'];
-
-    // Set the bot's activity and presence
-    client.user.setActivity(statusMessages[0], {
+    client.user.setActivity('Saito', {
         type: ActivityType.Watching,
     });
-    client.user.setPresence({ status: statusTypes[0] });
+    client.user.setPresence({ status: 'dnd' });
 }
 
+function formatTime() {
+    const date = new Date();
+    const options = {
+        timeZone: 'Asia/Manila',
+        hour12: true,
+        hour: 'numeric',
+        minute: 'numeric'
+    };
+    return new Intl.DateTimeFormat('en-US', options).format(date);
+}
 
 const mySecret = process.env['TOKEN'];
 client.login(mySecret);
