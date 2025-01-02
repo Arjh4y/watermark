@@ -62,11 +62,6 @@ app.listen(port, () => {
 });
 
 // Status messages kupal
-const statusMessages = ['BOT NI SAITO', 'KUPAL KABA MAN?'];
-const statusTypes = ['dnd', 'idle'];
-let currentStatusIndex = 0;
-let currentTypeIndex = 0;
-
 async function login() {
     try {
         await client.login(process.env.TOKEN);
@@ -113,7 +108,7 @@ async function setActivity() {
   const time = formatTime();
   client.user.setActivity({
     name: `STREAMING [${time}]`,
-    type: ActivityType.Streaming,
+    type: ActivityType.Watching,
     url: 'https://www.tiktok.com/@javinarjj',
   });
 
@@ -122,8 +117,8 @@ async function setActivity() {
 
 function updateStatus() {
     // Define the updateStatus function to change the bot's activity/status
-    const statusMessages = ['BOT NI SAITO', 'KUPAL KABA MAN?'];
-    const statusTypes = ['dnd', 'idle'];
+    const statusMessages = ['Saito'];
+    const statusTypes = ['dnd'];
     let currentStatusIndex = 0;
     let currentTypeIndex = 0;
 
