@@ -18,7 +18,7 @@ client.on('ready', () => {
 
 // Anti-spam response
 client.on('messageCreate', (message) => {
-    if (message.author.bot) return; 
+    if (message.author.bot) return;
 
     const userId = message.author.id;
     const userMessageData = messageCounts.get(userId) || { count: 0, timer: null };
@@ -27,13 +27,13 @@ client.on('messageCreate', (message) => {
 
     if (userMessageData.count >= 5) {
         message.channel.send(`WAG SPAM KUPAL KABA BOSS ${message.author}?!`);
-        userMessageData.count = 0; 
+        userMessageData.count = 0;
     }
 
     if (!userMessageData.timer) {
         userMessageData.timer = setTimeout(() => {
-            messageCounts.delete(userId); 
-        }, 10000); 
+            messageCounts.delete(userId);
+        }, 10000);
     }
 
     messageCounts.set(userId, userMessageData);
@@ -80,18 +80,32 @@ async function login() {
 }
 
 function updateStatus() {
-    const currentStatus = statusMessages[currentStatusIndex];
-    const currentType = statusTypes[currentTypeIndex];
     client.user.setPresence({
-        activities: [{ name: currentStatus, type: ActivityType.Custom }],
-        status: currentType,
+        activities: [
+            {
+                name: 'Saito',
+                type: ActivityType.Streaming,
+                url: 'https://www.tiktok.com/@javinarjj', // Replace with your streaming URL
+                state: 'Live',
+                details: `Saito [${new Date().toLocaleTimeString()}]`,
+                assets: {
+                    largeImage: 'https://media1.tenor.com/m/EuRL4e1BvGUAAAAC/malupiton-bossing-boss-dila.gif', // Replace with a large image URL
+                    largeText: 'Kupal ka BOSS', // Hover text for the large image
+                    smallImage: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e3eea550621f1ff34d3ae1f71c9f4e8b~c5_1080x1080.jpeg?lk3s=a5d48078&nonce=98051&refresh_token=f726489b0832fdd6668b68f084aa98b2&x-expires=1736020800&x-signature=pJW8hjQljfhDnHkoBPrl2VZxLR8%3D&shp=a5d48078&shcp=81f88b70', // Replace with a small image URL
+                    smallText: '_sythoo', // Hover text for the small image
+                },
+                buttons: [
+                    { label: 'Server', url: 'https://discord.gg/zyjnMDyy' }, // Replace with a URL
+                ],
+            },
+        ],
+        status: 'dnd',
     });
+
     console.log(
         '\x1b[33m[ STATUS ]\x1b[0m',
-        `Updated status to: ${currentStatus} (${currentType})`
+        `Updated status to streaming mode at ${new Date().toLocaleTimeString()}`
     );
-    currentStatusIndex = (currentStatusIndex + 1) % statusMessages.length;
-    currentTypeIndex = (currentTypeIndex + 1) % statusTypes.length;
 }
 
 function heartbeat() {
