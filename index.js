@@ -19,7 +19,7 @@ client.on('ready', () => {
         '\x1b[36m[ INFO ]\x1b[0m',
         `\x1b[34mPing: ${client.ws.ping} ms \x1b[0m`
     );
-    updateStatus();
+    updateStatus(); // Calling updateStatus here
     setInterval(updateStatus, 10000); // Update status every 10 seconds
 });
 
@@ -91,7 +91,7 @@ async function login() {
 function formatTime() {
   const date = new Date();
   const options = {
-    timeZone: 'America/New_York', 
+    timeZone: 'Asia/Manila', 
     hour12: true,
     hour: 'numeric',
     minute: 'numeric'
@@ -118,6 +118,24 @@ async function setActivity() {
   });
 
   client.user.setPresence({ status: 'dnd' }); // 'dnd', 'online', 'idle', 'offline'
+}
+
+function updateStatus() {
+    // Define the updateStatus function to change the bot's activity/status
+    const statusMessages = ['BOT NI SAITO', 'KUPAL KABA MAN?'];
+    const statusTypes = ['dnd', 'idle'];
+    let currentStatusIndex = 0;
+    let currentTypeIndex = 0;
+
+    // Set the bot's activity and presence
+    client.user.setActivity(statusMessages[currentStatusIndex], {
+        type: ActivityType.Watching,
+    });
+    client.user.setPresence({ status: statusTypes[currentTypeIndex] });
+
+    // Toggle between status messages and types
+    currentStatusIndex = (currentStatusIndex + 1) % statusMessages.length;
+    currentTypeIndex = (currentTypeIndex + 1) % statusTypes.length;
 }
 
 const mySecret = process.env['TOKEN'];
