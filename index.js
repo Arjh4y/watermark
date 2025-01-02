@@ -10,13 +10,19 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
     ],
 });
+
 const messageCounts = new Map();
 
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
+    console.log(
+        '\x1b[36m[ INFO ]\x1b[0m',
+        `\x1b[34mPing: ${client.ws.ping} ms \x1b[0m`
+    );
+    updateStatus();
+    setInterval(updateStatus, 10000); // Update status every 10 seconds
 });
 
-// Anti-spam response
 client.on('messageCreate', (message) => {
     if (message.author.bot) return;
 
@@ -28,6 +34,7 @@ client.on('messageCreate', (message) => {
     if (userMessageData.count >= 5) {
         message.channel.send(`WAG SPAM KUPAL KABA BOSS ${message.author}?!`);
         userMessageData.count = 0;
+        clearTimeout(userMessageData.timer); // Clear previous timeout
     }
 
     if (!userMessageData.timer) {
@@ -41,10 +48,12 @@ client.on('messageCreate', (message) => {
 
 const app = express();
 const port = 3000;
+
 app.get('/', (req, res) => {
     const imagePath = path.join(__dirname, 'index.html');
-    res.sendFile(imagePath);
+    res.sendFile(imagePath, { headers: { 'Content-Type': 'text/html' } });
 });
+
 app.listen(port, () => {
     console.log(
         '\x1b[36m[ SERVER ]\x1b[0m',
@@ -79,14 +88,11 @@ async function login() {
     }
 }
 
-function formatTime() {
-    const now = new Date();
-    return now.toLocaleTimeString();
-}
-
 function updateStatus() {
-    let r = {
-       name: 'Saito',
+    client.user.setPresence({
+        activities: [
+            {
+                name: 'Saito',
                 type: ActivityType.Streaming,
                 url: 'https://www.tiktok.com/@javinarjj', // Replace with your streaming URL
                 state: 'Live',
@@ -99,23 +105,10 @@ function updateStatus() {
                 },
                 buttons: [
                     { label: 'Server', url: 'https://discord.gg/zyjnMDyy' }, // Replace with a URL
+                ],
+            },
         ],
-    };
-
-    client.user.setActivity(r);
-    client.user.setPresence({ status: 'dnd' }); // dnd, online, idle, offline
-
-    let prevTime = null;
-    setInterval(() => {
-        const newTime = formatTime();
-        if (newTime !== prevTime) {
-            const newDetails = `Alagad ni saito`;
-            r.details = newDetails;
-            client.user.setActivity(r);
-            prevTime = newTime;
-        }
-    }, 1000); // Update every second
+    });
 }
 
 login();
-updateStatus();
