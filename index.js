@@ -120,4 +120,5 @@ async function setActivity() {
   client.user.setPresence({ status: 'dnd' }); // 'dnd', 'online', 'idle', 'offline'
 }
 
-login();
+const mySecret = process.env['TOKEN'];
+client.login(mySecret);
