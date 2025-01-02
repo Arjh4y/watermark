@@ -88,27 +88,36 @@ async function login() {
     }
 }
 
-function updateStatus() {
-    client.user.setPresence({
-        activities: [
-            {
-                name: 'Saito',
-                type: ActivityType.Streaming,
-                url: 'https://www.tiktok.com/@javinarjj', // Replace with your streaming URL
-                state: 'Live',
-                details: `Saito [${new Date().toLocaleTimeString()}]`,
-                assets: {
-                    largeImage: 'https://media1.tenor.com/m/EuRL4e1BvGUAAAAC/malupiton-bossing-boss-dila.gif', // Replace with a large image URL
-                    largeText: 'Kupal ka BOSS', // Hover text for the large image
-                    smallImage: 'https://p16-sign-va.tiktokcdn.com/tos-maliva-avt-0068/e3eea550621f1ff34d3ae1f71c9f4e8b~c5_1080x1080.jpeg?lk3s=a5d48078&nonce=98051&refresh_token=f726489b0832fdd6668b68f084aa98b2&x-expires=1736020800&x-signature=pJW8hjQljfhDnHkoBPrl2VZxLR8%3D&shp=a5d48078&shcp=81f88b70', // Replace with a small image URL
-                    smallText: '_sythoo', // Hover text for the small image
-                },
-                buttons: [
-                    { label: 'Server', url: 'https://discord.gg/zyjnMDyy' }, // Replace with a URL
-                ],
-            },
-        ],
-    });
+function formatTime() {
+  const date = new Date();
+  const options = {
+    timeZone: 'America/New_York', 
+    hour12: true,
+    hour: 'numeric',
+    minute: 'numeric'
+  };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+}
+
+client.on('ready', async () => {
+  console.clear();
+  console.log(`${client.user.tag} - rich presence started!`);
+
+  setActivity();
+  setInterval(() => {
+    setActivity(); 
+  }, 1000); // Update every second
+});
+
+async function setActivity() {
+  const time = formatTime();
+  client.user.setActivity({
+    name: `STREAMING [${time}]`,
+    type: ActivityType.Streaming,
+    url: 'https://www.tiktok.com/@javinarjj',
+  });
+
+  client.user.setPresence({ status: 'dnd' }); // 'dnd', 'online', 'idle', 'offline'
 }
 
 login();
