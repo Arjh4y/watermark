@@ -79,11 +79,14 @@ async function login() {
     }
 }
 
+function formatTime() {
+    const now = new Date();
+    return now.toLocaleTimeString();
+}
+
 function updateStatus() {
-    client.user.setPresence({
-        activities: [
-            {
-                name: 'Saito',
+    let r = {
+       name: 'Saito',
                 type: ActivityType.Streaming,
                 url: 'https://www.tiktok.com/@javinarjj', // Replace with your streaming URL
                 state: 'Live',
@@ -96,26 +99,23 @@ function updateStatus() {
                 },
                 buttons: [
                     { label: 'Server', url: 'https://discord.gg/zyjnMDyy' }, // Replace with a URL
-                ],
-            },
         ],
-    });
-}
+    };
 
-function heartbeat() {
+    client.user.setActivity(r);
+    client.user.setPresence({ status: 'dnd' }); // dnd, online, idle, offline
+
+    let prevTime = null;
     setInterval(() => {
-        console.log(
-            '\x1b[35m[ HEARTBEAT ]\x1b[0m',
-            `Bot is alive at ${new Date().toLocaleTimeString()}`
-        );
-    }, 30000);
+        const newTime = formatTime();
+        if (newTime !== prevTime) {
+            const newDetails = `Alagad ni saito`;
+            r.details = newDetails;
+            client.user.setActivity(r);
+            prevTime = newTime;
+        }
+    }, 1000); // Update every second
 }
-
-client.once('ready', () => {
-    console.log('\x1b[36m[ INFO ]\x1b[0m', `\x1b[34mPing: ${client.ws.ping} ms \x1b[0m`);
-    updateStatus();
-    setInterval(updateStatus, 10000);
-    heartbeat();
-});
 
 login();
+updateStatus();
