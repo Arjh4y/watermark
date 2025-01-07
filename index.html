@@ -11,70 +11,70 @@
             margin: 0;
             padding: 0;
             font-family: 'Poppins', sans-serif;
+            height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            background: linear-gradient(135deg, #ff007a, #ffb74d);
             overflow: hidden;
-        }
-        .container {
-            text-align: center;
+            background: radial-gradient(circle at center, #121212, #1a1a1a);
             color: white;
         }
-        .main-heading, .sub-heading {
-            font-size: 4rem;
-            margin: 0;
-            position: relative;
-            animation: glitch 1.5s infinite;
+
+        .container {
+            text-align: center;
+            animation: fadeIn 2s ease;
         }
+
         .main-heading {
             font-size: 5rem;
+            margin: 0;
+            text-shadow: 0 0 20px rgba(255, 0, 122, 0.8), 0 0 40px rgba(255, 183, 77, 0.8);
+            animation: glow 1.5s infinite alternate;
         }
+
         .sub-heading {
             font-size: 2rem;
             margin-top: 10px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.7);
         }
+
         .icons {
             margin-top: 20px;
         }
+
         .icons a {
             color: white;
             margin: 0 15px;
             font-size: 2rem;
             text-decoration: none;
-            transition: color 0.3s;
+            transition: transform 0.3s ease, color 0.3s;
         }
+
         .icons a:hover {
+            transform: scale(1.2);
             color: #ffb74d;
         }
-        @keyframes glitch {
-            0% {
-                transform: translate(0);
-                text-shadow: 1px 1px 0 #fff, -1px -1px 0 #ff007a;
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
             }
-            20% {
-                transform: translate(-5px, 5px);
-                text-shadow: 2px 2px 0 #ff007a, -2px -2px 0 #ffb74d;
-            }
-            40% {
-                transform: translate(5px, -5px);
-                text-shadow: 1px 1px 0 #ffb74d, -1px -1px 0 #ff007a;
-            }
-            60% {
-                transform: translate(-5px, -5px);
-                text-shadow: 2px 2px 0 #fff, -2px -2px 0 #ff007a;
-            }
-            80% {
-                transform: translate(5px, 5px);
-                text-shadow: 1px 1px 0 #ff007a, -1px -1px 0 #ffb74d;
-            }
-            100% {
-                transform: translate(0);
-                text-shadow: 1px 1px 0 #fff, -1px -1px 0 #ff007a;
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 10px rgba(255, 0, 122, 0.6), 0 0 20px rgba(255, 183, 77, 0.6);
+            }
+            to {
+                text-shadow: 0 0 25px rgba(255, 0, 122, 1), 0 0 50px rgba(255, 183, 77, 1);
+            }
+        }
+
         @media (max-width: 768px) {
             .main-heading {
                 font-size: 3rem;
@@ -86,16 +86,53 @@
                 font-size: 1.5rem;
             }
         }
+
+        /* Animated Stars Background */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            z-index: -1;
+        }
+
+        .stars::before, .stars::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(white 1px, transparent 1px);
+            background-size: 20px 20px;
+            opacity: 0.3;
+            animation: moveStars 10s linear infinite;
+        }
+
+        .stars::after {
+            animation-delay: 5s;
+        }
+
+        @keyframes moveStars {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(-50px, -50px);
+            }
+        }
     </style>
 </head>
 <body>
+    <div class="stars"></div>
     <div class="container">
         <div class="main-heading">Saito(_sythoo)</div>
-        <div class="sub-heading">BOTGHOST STATUS REMOVER AND SPAM RESPONSE</div>
+        <div class="sub-heading">Kupal lang boss</div>
         <div class="icons">
-            <a href="https://discord.gg/zyjnMDyy" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+            <a href="https://discord.gg/py8Wu9Ce" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
         </div>
     </div>
 </body>
 </html>
-                 
