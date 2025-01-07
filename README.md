@@ -43,7 +43,7 @@
 </h1>
 
 <p align="center">
-  <a href="https://discord.gg/zyjnMDyy">
+  <a href="https://discord.gg/py8Wu9Ce">
     <img src="https://img.shields.io/badge/Discord-Join-blue?style=flat-square&logo=discord"
       alt="Join Discord" />
   </a>
