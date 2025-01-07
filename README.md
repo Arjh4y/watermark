@@ -35,7 +35,7 @@
     margin: 20px auto;
     display: inline-block;
   ">
-  BOTGHOST STATUS REMOVER AND SPAM RESPONSE 
+  24/7 ONLINE BOTR AND SPAM RESPONSE 
   <br>
   <span style="font-size: 1.2em; color: #ffeb3b;">
     "WAG SPAM KUPAL KABA BOSS {user}?!"
